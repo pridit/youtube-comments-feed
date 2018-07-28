@@ -1,0 +1,74 @@
+{% extends 'layouts/base.twig' %}
+
+{% block content %}
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr style="color: #eee; background-color: #7f8c8d">
+                <th scope="col"></th>
+                <th scope="col">Username</th>
+                <th scope="col">Comment</th>
+                <th scope="col">Video</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for comment in comments %}
+                <tr style="color: #606060" data-published="{{ comment.published_at|date('Y-m-d') }}">
+                    <td class="align-middle">
+                        <img src="{{ comment.avatar }}" />
+                    </td>
+                    <td class="align-middle comment-name">{{ comment.author }}</td>
+                    <td class="align-middle">{{ comment.text }}</td>
+                    <td class="align-middle">
+                        <a target="_blank" href="http://youtube.com/watch?v={{ comment.video }}&lc={{ comment.parent }}">http://youtu.be/{{ comment.video }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    var pusher = new Pusher('{{ api.pusher.key }}', {
+      cluster: 'eu',
+      encrypted: true
+    });
+
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+      if ($("tbody tr").length >= 20) {
+          $("tbody tr").slice(-1).remove()
+      }
+
+      $('tbody').prepend(`<tr style="color: #606060">
+          <td class="align-middle"><img src="`+data.authorProfileImageUrl+`" ></td>
+          <td class="align-middle comment-name">`+data.authorDisplayName+`</td>
+          <td class="align-middle">`+data.textOriginal+`</td>
+          <td class="align-middle"><a target="_blank" href="http://youtube.com/watch?v=`+data.videoId+`&lc=`+data.parentId+`">http://youtu.be/`+data.videoId+`</a></td>
+      </tr>`).children(':first').hide().fadeIn(700);
+
+      var notification = new Notification(data.authorDisplayName, {
+        icon: data.authorProfileImageUrl,
+        body: data.textOriginal,
+      });
+
+      notification.onclick = function () {
+        window.open("http://youtube.com/watch?v="+data.videoId+"&lc="+data.parentId);
+      };
+    });
+
+    $(document).ready(function() {
+        if (Notification.permission !== "granted")
+          Notification.requestPermission();
+
+        $('tr').each(function() {
+          if ($(this).data('published') <= '{{ "-1 day"|date("Y-m-d") }}') {
+            $(this).css('color', '#606060');
+          }
+        });
+    });
+</script>
+{% endblock %}
