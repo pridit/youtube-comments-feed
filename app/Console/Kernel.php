@@ -24,6 +24,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('poll:youtube')->everyFifteenMinutes();
+        $schedule->command('poll:youtube')->everyMinute();
     }
 }
