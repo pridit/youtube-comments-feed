@@ -23,6 +23,7 @@ trait ChainsTrait
                     ->pluck(['snippet', 'topLevelComment'])
                     ->flatten()
                     ->pluck('snippet');
+                break;
 
             case 'replies':
                 $chain = $this->getChain($type)->pluck('items')
@@ -37,6 +38,7 @@ trait ChainsTrait
                             ($comment['authorDisplayName'] == 'TheMegaUzumaki' && strpos($comment['textOriginal'], 'Pridit') !== false)
                         );
                     });
+                break;
         }
 
         return $chain->sortBy('publishedAt');

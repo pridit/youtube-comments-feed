@@ -35,8 +35,8 @@ class PollYoutubeCommand extends Command
     public function handle()
     {
         $this->getChainFormatted(config('app.comments'))
-            ->filter(function ($comment) {
-                return !Comment::matches($comment)->count();
+            ->reject(function ($comment) {
+                return Comment::matches($comment)->count();
             })
             ->each(function ($comment) {
                 event(new NewComment($comment));
