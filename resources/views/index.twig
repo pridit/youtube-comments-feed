@@ -16,7 +16,7 @@
             {% for comment in comments %}
                 <tr style="color: #606060" data-published="{{ comment.published_at|date('Y-m-d') }}">
                     <td class="align-middle">
-                        <img src="{{ comment.avatar }}" />
+                        <img style="border-radius: 100px" src="{{ comment.avatar }}" />
                     </td>
                     <td class="align-middle comment-name">{{ comment.author }}</td>
                     <td class="align-middle">{{ comment.text }}</td>
@@ -44,7 +44,7 @@
       }
 
       $('tbody').prepend(`<tr style="color: #606060">
-          <td class="align-middle"><img src="`+data.authorProfileImageUrl+`" ></td>
+          <td class="align-middle"><img style="border-radius: 100px" src="`+data.authorProfileImageUrl+`" ></td>
           <td class="align-middle comment-name">`+data.authorDisplayName+`</td>
           <td class="align-middle">`+data.textOriginal+`</td>
           <td class="align-middle"><a target="_blank" href="http://youtube.com/watch?v=`+data.videoId+`&lc=`+data.parentId+`">http://youtu.be/`+data.videoId+`</a></td>
